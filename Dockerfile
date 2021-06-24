@@ -12,9 +12,9 @@ RUN wget --quiet https://repo.anaconda.com/miniconda/Miniconda3-4.7.12-Linux-x86
 # Install dependency
 RUN apt-get update
 RUN apt-get install ffmpeg libsm6 libxext6  -y
-COPY environment.yml /tmp/tensorflow_lprnet_test/conda/
+COPY environment.yml /app/conda/
 RUN /opt/conda/bin/conda update -n base -c defaults conda
-RUN /opt/conda/bin/conda env create -f /tmp/tensorflow_lprnet_test/conda/environment.yml
+RUN /opt/conda/bin/conda env create -f /app/conda/environment.yml
 RUN /opt/conda/bin/conda clean -afy
 
 
