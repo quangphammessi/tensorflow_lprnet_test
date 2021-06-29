@@ -16,7 +16,7 @@ BATCH_SIZE = 64
 BATCH_PER_EPOCH = 50
 
 TRAIN_DIR = os.path.join(PROJECT_ROOT, 'train')
-VAL_DIR = os.path.join(PROJECT_ROOT, 'valid')
+VAL_DIR = os.path.join(PROJECT_ROOT, '.valid')
 TEST_DIR = os.path.join(PROJECT_ROOT, 'test')
 FONT_DIR = os.path.join(PROJECT_ROOT, 'fonts')
 
