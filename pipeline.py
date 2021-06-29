@@ -5,10 +5,7 @@ from kfp.dsl import PipelineVolume
 # To compile the pipeline:
 #   dsl-compile --py pipeline.py --output pipeline.tar.gz
 
-WORKSPACE = '/workspace'
-PROJECT_ROOT = os.path.join(WORKSPACE, 'tensorflow_lprnet_test')
-CONDA_PYTHON_CMD = '/opt/conda/envs/kubeflow-lpr/bin/python'
-
+from constants import PROJECT_ROOT, WORKSPACE, CONDA_PYTHON_CMD
 
 def git_clone_op(repo_url: str):
     image='alpine/git:latest'
@@ -35,26 +32,44 @@ def git_clone_op(repo_url: str):
 
     return op
 
-def train_op(image: str, pvolumn: PipelineVolume):
+def generate_data(image: str, pvolume: PipelineVolume):
+
+    commands = [
+        f'{CONDA_PYTHON_CMD} {PROJECT_ROOT}/gen_plates.py',
+        f'{CONDA_PYTHON_CMD} {PROJECT_ROOT}/gen_plates.py -s {PROJECT_ROOT}/.valid -n 200'
+    ]
+
+    return dsl.ContainerOp(
+        name='data generation',
+        image=image,
+        command=['sh'],
+        arguments=['-c', ' && '.join(commands)],
+        container_kwargs={'image_pull_policy': 'IfNotPresent'},
+        pvolumes={"/workspace": pvolume}
+    )
+
+def train_op(image: str, pvolume: PipelineVolume):
     return dsl.ContainerOp(
         name='training',
         image=image,
         command=[CONDA_PYTHON_CMD, f'{PROJECT_ROOT}/main.py'],
         arguments=['-m', 'train'],
         container_kwargs={'image_pull_policy': 'IfNotPresent'},
-        pvolumes={"/workspace": pvolumn}
+        pvolumes={"/workspace": pvolume}
     )
 
 @dsl.pipeline(
     name='License Plate Recognition Training Pipeline',
     description='License Plate Recognition Training Pipeline to be executed on KubeFlow.'
 )
-def training_pipeline(image: str='quangphammessi/project_hub:latest',
+def training_pipeline(image: str='quangphammessi/tensorflow_lprnet',
                         repo_url: str='https://github.com/quangphammessi/tensorflow_lprnet_test',
                         data_dir: str='/workspace'):
     git_clone = git_clone_op(repo_url=repo_url)
 
-    train = train_op(image=image, pvolumn=git_clone.pvolume)
+    gen_date = generate_data(image=image, pvolume=git_clone.pvolume)
+
+    train = train_op(image=image, pvolume=gen_date.pvolume)
 
 
 if __name__ == '__main__':

@@ -3,6 +3,7 @@ RUN mkdir /app
 
 # install conda
 WORKDIR /app
+SHELL ["/bin/bash", "-c"]
 RUN wget --quiet https://repo.anaconda.com/miniconda/Miniconda3-4.7.12-Linux-x86_64.sh -O ~/miniconda.sh && \
     /bin/bash ~/miniconda.sh -b -p /opt/conda && \
     rm ~/miniconda.sh && \
@@ -22,3 +23,5 @@ RUN /opt/conda/bin/conda clean -afy
 RUN echo "conda activate kubeflow-lpr" >> ~/.bashrc
 ENV PATH /opt/conda/envs/kubeflow-lpr/bin:$PATH
 RUN /opt/conda/bin/activate kubeflow-lpr
+
+CMD [ "/bin/bash" ]

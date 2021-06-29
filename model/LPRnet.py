@@ -1,4 +1,7 @@
+import os
 import tensorflow as tf
+
+from constants import PROJECT_ROOT
 
 TRAIN_EPOCHS = 300
 INITIAL_LEARNING_RATE = 1e-3
@@ -12,11 +15,12 @@ VALIDATE_EPOCHS = 10
 BATCH_SIZE = 64
 BATCH_PER_EPOCH = 50
 
-TRAIN_DIR = 'train'
-VAL_DIR = 'valid'
-TEST_DIR = 'test'
+TRAIN_DIR = os.path.join(PROJECT_ROOT, 'train')
+VAL_DIR = os.path.join(PROJECT_ROOT, 'valid')
+TEST_DIR = os.path.join(PROJECT_ROOT, 'test')
+FONT_DIR = os.path.join(PROJECT_ROOT, 'fonts')
 
-CHECKPOINT_DIR = './checkpoint'
+CHECKPOINT_DIR = 'checkpoint'
 
 IMG_SIZE = [94, 24]
 CH_NUM = 3

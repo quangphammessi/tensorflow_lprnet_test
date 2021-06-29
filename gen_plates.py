@@ -12,6 +12,8 @@ from PIL import ImageFont
 from data_aug import data_augmentation
 import model.LPRnet as model
 
+from model.LPRnet import FONT_DIR
+
 class ImageGenerator:
     def __init__(self, ttf_dir, char_set, char_height=36):
 
@@ -179,7 +181,7 @@ if __name__ == "__main__":
         return name
 
     FONT_HEIGHT = 32
-    ttfCharGen = ImageGenerator('./fonts/', char_set=model.CHARS, char_height=FONT_HEIGHT)
+    ttfCharGen = ImageGenerator(FONT_DIR, char_set=model.CHARS, char_height=FONT_HEIGHT)
 
     plates, labels = ttfCharGen.generate_images(args.num)
     #for plate in plates:
